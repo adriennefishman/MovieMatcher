@@ -26,8 +26,8 @@ class MovieScraper
       actors.each do |actor|
         m.actors << Actor.find_or_create_by(name: "#{actor}")
       end
+      m.image_url = movie.parent.css(".poster")[0]["src"]
 
-      m.image_url = movie.parent.search("img").last.attributes["src"].value
       m.save
     end
   end
