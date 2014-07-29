@@ -4,7 +4,6 @@ class CreateMovies < ActiveRecord::Migration
     	t.string :title
     	t.string :rating
     	t.integer :runtime
-    	t.integer :metascore
     	t.text :description
     	t.string :director
     	t.string :image_url

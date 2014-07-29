@@ -2,29 +2,35 @@ require 'nokogiri'
 require 'open-uri'
 require 'pry'
 
-doc = Nokogiri::HTML(open('http://www.imdb.com/movies-in-theaters/?ref_=nv_mv_inth_1'))
+class MovieScraper
 
-doc.css(".overview-top").each do |movie|
-  title       = movie.children[1].children.children.text[1..-7]
-  rating      = movie.children[3].children[1].attributes["title"].value
-  duration    = movie.children[3].children[3].children.text
-  genres      = movie.children[3].css("span").children.text.split('|')[0..-1]
+  def initialize
+    doc = Nokogiri::HTML(open('http://www.imdb.com/movies-in-theaters/?ref_=nv_mv_inth_1'))
+
+    doc.css(".overview-top").each do |movie|
+      m = Movie.new
+
+      m.title       = movie.children[1].children.children.text[1..-7]
+      m.rating      = movie.children[3].children[1].attributes["title"].value
+      m.runtime    = movie.children[3].children[3].children.text
+
+      # build each genre and assign it to the movie
+      genres      = movie.children[3].css("span").children.text.split('|')[0..-1]
+      genres.each do |genre|
+        m.genres << Genre.find_or_create_by(name: "#{genre}")
+      end
+
+      m.description = movie.children[7].children.text.gsub("\n", "").strip
+      m.director    = movie.children[9].children.children.children.children.text
+
+      # build each actor and ad them to the movie
+      # actors      = movie.children[11].children.children.children.text.split("\n")[1..m.-1]
 
 
+      m.image_url = movie.parent.search("img").last.attributes["src"].value
+      m.save
 
-  description = movie.children[7].children.text.gsub("\n", "").strip
-  director    = movie.children[9].children.children.children.children.text
-  actors      = movie.children[11].children.children.children.text.split("\n")[1..-1]
-  # binding.pry
-  image_url = movie.parent.search("img").last.attributes["src"].value
-
-  puts "title: #{title}"
-  puts "rating: #{rating}"
-  puts "duration: #{duration}"
-  puts "genres: #{genres}"
-  puts "description: #{description}"
-  puts "director: #{director}"
-  puts "actors: #{actors}"
-  puts "image_url: #{image_url}"
+    end
+  end
 
 end
