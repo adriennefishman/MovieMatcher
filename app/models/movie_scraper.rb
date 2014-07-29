@@ -9,13 +9,12 @@ class MovieScraper
 
     doc.css(".overview-top").each do |movie|
       m = Movie.new
+      
+      m.title   = movie.children[1].children.children.text[1..-7]
+      m.rating  = movie.children[3].children[1].attributes["title"].value
+      m.runtime = movie.children[3].children[3].children.text
 
-      m.title       = movie.children[1].children.children.text[1..-7]
-      m.rating      = movie.children[3].children[1].attributes["title"].value
-      m.runtime    = movie.children[3].children[3].children.text
-
-      # build each genre and assign it to the movie
-      genres      = movie.children[3].css("span").children.text.split('|')[0..-1]
+      genres = movie.children[3].css("span").children.text.split('|')[0..-1]
       genres.each do |genre|
         m.genres << Genre.find_or_create_by(name: "#{genre}")
       end
@@ -23,13 +22,13 @@ class MovieScraper
       m.description = movie.children[7].children.text.gsub("\n", "").strip
       m.director    = movie.children[9].children.children.children.children.text
 
-      # build each actor and ad them to the movie
-      # actors      = movie.children[11].children.children.children.text.split("\n")[1..m.-1]
-
+      actors = movie.children[11].children.children.children.text.split("\n")[1..-1]
+      actors.each do |actor|
+        m.actors << Actor.find_or_create_by(name: "#{actor}")
+      end
 
       m.image_url = movie.parent.search("img").last.attributes["src"].value
       m.save
-
     end
   end
 
