@@ -1,0 +1,17 @@
+
+<% @movies.each do |movie|%>
+  <h2><%= movie.title%></h2>
+    <ul>
+      <li>Rating: <%= movie.rating%></li>
+      <li>Runtime: <%= movie.runtime%></li>
+      <li>description: <%= movie.description%></li>
+      <li>Director: <%= movie.director%></li>
+      <li><img src="<%=movie.image_url%>"></li>
+      <%movie.genres.each do |genre|%>
+      <%= genre.name%>
+      <%end%>
+      <%movie.actors.each do |actor|%>
+      <%= actor.name%>
+      <%end%>
+    </ul>
+<%end%>
