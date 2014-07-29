@@ -10,7 +10,8 @@ class MovieScraper
     doc.css(".overview-top").each do |movie|
       m = Movie.new
       
-      m.title   = movie.children[1].children.children.text[1..-7]
+      index = movie.children[1].children.children.text.index("(")
+      m.title   = movie.children[1].children.children.text[1..index-2]
       m.rating  = movie.children[3].children[1].attributes["title"].value
       m.runtime = movie.children[3].children[3].children.text
 
