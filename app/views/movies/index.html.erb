@@ -6,7 +6,7 @@
       <li>Runtime: <%= movie.runtime%></li>
       <li>description: <%= movie.description%></li>
       <li>Director: <%= movie.director%></li>
-      <li><img src="<%=movie.image_url%>"></li>
+      <li><%= image_tag("#{movie.image_url}", alt: "#{movie.title}")%></li>
       <%movie.genres.each do |genre|%>
       <%= genre.name%>
       <%end%>
